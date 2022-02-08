@@ -12,14 +12,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// Connect to Mongoose and set connection variable
-mongoose.connect('mongodb+srv://anashandaru:3S35TzJhXrlHzhRT@cluster0.t141b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
-// mongoose.connect('mongodb://localhost/simplemessage', { useNewUrlParser: true});
 
 const db = mongoose.connection;
 
 
-if(!db)console.log("Error connecting DB")
+if (!db) console.log("Error connecting DB")
 else console.log("MongoDB connected successfully")
 
 
@@ -29,8 +26,12 @@ app.get('/', (req, res) => res.send('Hello this app is created to learn and expl
 // Use Api routes in the App
 app.use('/api', apiRoutes);
 
-// Launch app to listen to specified port
-const port = 8080;
-app.listen(port, () => {
-    console.log("Running RestHub on port " + port);
-});
+// Connect to Mongoose and set connection variable
+mongoose.connect('mongodb+srv://anashandaru:@cluster0.t141b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+    .then(result => {
+        const port = 8080;
+        app.listen(port);
+        console.log("Running Server on port " + port)
+    })
+    .catch(err => { console.log(err); });
+// mongoose.connect('mongodb://localhost/simplemessage', { useNewUrlParser: true});
