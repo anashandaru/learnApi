@@ -13,7 +13,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // Connect to Mongoose and set connection variable
-mongoose.connect('mongodb://localhost/simplemessage', { useNewUrlParser: true});
+mongoose.connect('mongodb+srv://anashandaru:3S35TzJhXrlHzhRT@cluster0.t141b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+// mongoose.connect('mongodb://localhost/simplemessage', { useNewUrlParser: true});
 
 const db = mongoose.connection;
 

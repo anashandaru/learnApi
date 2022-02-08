@@ -1,54 +1,54 @@
-Message = require("./messageModel");
+const Message = require("./messageModel");
 
-exports.new = (req, res) => {
-  var message = new Message();
-  message.username = req.body.username;
-  message.content = req.body.content;
-  message.post_date = Date.now();
+exports.new = async (req, res, next) => {
+  const newMessage = new Message({
+    username: req.body.username,
+    content: req.body.content,
+    post_date: Date.now()
+  });
 
-  message.save((err) => {
+  await newMessage.save((err) => {
     if (err) res.json(err);
-    else res.json({ message: "New Message created", data: message });
+    else res.json({ message: "New Message created", data: newMessage });
   });
 };
 
-exports.viewAll = (req, res) => {
-  Message.get((err, messages) => {
-    if (err) res.json(err);
-    else
-      res.json({
-        status: "Messages retrieved successfully",
-        data: messages,
-      });
-  });
+exports.viewAll = async (req, res, next) => {
+  const message = await Message.find().exec();
+  res.json(message);
 };
 
-exports.view = (req, res) => {
-  Message.findById(req.params.message_id, (err, message) => {
-    if (err) res.json(err);
-    else res.json({ status: "Sending message detail", data: message });
-  });
+exports.view = async (req, res, next) => {
+  let message;
+  try {
+    message = await Message.findById(req.params.message_id).exec();
+  } catch (error) {
+    res.json(error);
+    return next(error);
+  }
+  res.json(message);
 };
 
-exports.delete = (req, res) => {
-  Message.remove({ _id: req.params.message_id }, (err, message) => {
-    if (err) res.json(err);
-    else res.json({ status: "contact deleted" });
-  });
+exports.delete = async (req, res, next) => {
+  try {
+    await Message.deleteOne({ _id: req.params.message_id }).exec();
+  } catch (error) {
+    res.json(error);
+    return next(error);
+  }
+  res.json({ status: "message deleted" });
 };
 
-exports.update = (req, res) => {
-  Message.findById(req.params.message_id, (err, message) => {
-    if (err) res.json(err);
-    else {
-      message.username = req.body.username;
-      message.content = req.body.content;
-      message.save((err) => {
-        if (err) res.json(err);
-        else {
-          res.json({ status: "Message updated", data: message });
-        }
-      });
-    }
-  });
+exports.update = async (req, res, next) => {
+  let message;
+  try {
+    message = await Message.findById(req.params.message_id).exec();
+    message.username = req.body.username ? req.body.username : message.username;
+    message.content = req.body.content ? req.body.content : message.content;
+    await message.save();
+  } catch (error) {
+    res.json(error);
+    return next(error);
+  }
+  res.json({ status: "message updated", data: message });
 };

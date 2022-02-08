@@ -10,15 +10,16 @@ router.get("/", (req, res) => {
 
 // message routes
 router
-  .route("/messages")
-  .get(messageController.viewAll)
-  .post(messageController.new);
-
-router
   .route("/messages/:message_id")
   .get(messageController.view)
   .delete(messageController.delete)
   .patch(messageController.update);
+  
+router
+  .route("/messages")
+  .get(messageController.viewAll)
+  .post(messageController.new);
+
 
 // Export API routes
 module.exports = router;
